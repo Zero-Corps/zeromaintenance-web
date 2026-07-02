@@ -18,7 +18,7 @@ export type QuoteNotification = {
   vehicleMake: string;
   vehicleModel: string;
   sizeClass: SizeClassId;
-  services: ServiceId[];
+  service: ServiceId;
   serviceAddress: string;
   notes: string;
   estimate: Estimate;
@@ -73,7 +73,7 @@ async function sendEmail(q: QuoteNotification): Promise<ChannelResult> {
     }
 
     const resend = new Resend(apiKey);
-    const serviceList = q.services.map((s) => serviceLabel(s)).join(", ");
+    const serviceList = serviceLabel(q.service);
     const vehicle = vehicleString(q);
     const range = estimateRange(q);
 
@@ -87,7 +87,7 @@ async function sendEmail(q: QuoteNotification): Promise<ChannelResult> {
         <tr><td style="padding:6px 0;color:#8A90A2">Phone</td><td style="padding:6px 0"><a style="color:#5A9BFF" href="tel:${q.phone}">${q.phone}</a></td></tr>
         <tr><td style="padding:6px 0;color:#8A90A2">Vehicle</td><td style="padding:6px 0">${vehicle}</td></tr>
         <tr><td style="padding:6px 0;color:#8A90A2">Size class</td><td style="padding:6px 0">${sizeClassLabel(q.sizeClass)}</td></tr>
-        <tr><td style="padding:6px 0;color:#8A90A2">Services</td><td style="padding:6px 0">${serviceList}</td></tr>
+        <tr><td style="padding:6px 0;color:#8A90A2">Service</td><td style="padding:6px 0">${serviceList}</td></tr>
         <tr><td style="padding:6px 0;color:#8A90A2">Service address</td><td style="padding:6px 0">${q.serviceAddress}</td></tr>
         <tr><td style="padding:6px 0;color:#8A90A2;vertical-align:top">Notes</td><td style="padding:6px 0">${q.notes?.trim() ? q.notes : "—"}</td></tr>
       </table>
@@ -101,7 +101,7 @@ async function sendEmail(q: QuoteNotification): Promise<ChannelResult> {
       `Phone: ${q.phone}`,
       `Vehicle: ${vehicle}`,
       `Size class: ${sizeClassLabel(q.sizeClass)}`,
-      `Services: ${serviceList}`,
+      `Service: ${serviceList}`,
       `Service address: ${q.serviceAddress}`,
       `Notes: ${q.notes?.trim() || "—"}`,
     ].join("\n");
@@ -154,7 +154,7 @@ async function sendSms(q: QuoteNotification): Promise<ChannelResult> {
       return { status: "skipped", reason };
     }
 
-    const serviceList = q.services.map((s) => serviceLabel(s)).join(", ");
+    const serviceList = serviceLabel(q.service);
     const body = [
       `New Zero Maintenance quote`,
       `${q.name} · ${q.phone}`,

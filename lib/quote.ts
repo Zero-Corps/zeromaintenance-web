@@ -9,11 +9,14 @@ export const SERVICES = [
 
 export type ServiceId = (typeof SERVICES)[number]["id"];
 
+// Flat upcharge for larger vehicles — added on top of the selected service.
+export const SIZE_UPCHARGE = 25;
+
 export const SIZE_CLASSES = [
-  { id: "sedan", label: "Sedan", multiplier: 1.0 },
-  { id: "suv", label: "SUV", multiplier: 1.2 },
-  { id: "truck", label: "Truck", multiplier: 1.3 },
-  { id: "xl", label: "XL (van / large SUV)", multiplier: 1.5 },
+  { id: "sedan", label: "Sedan", upcharge: 0 },
+  { id: "suv", label: "SUV", upcharge: SIZE_UPCHARGE },
+  { id: "truck", label: "Truck", upcharge: SIZE_UPCHARGE },
+  { id: "xl", label: "XL (van / large SUV)", upcharge: SIZE_UPCHARGE },
 ] as const;
 
 export type SizeClassId = (typeof SIZE_CLASSES)[number]["id"];
@@ -22,7 +25,7 @@ export type SizeClassId = (typeof SIZE_CLASSES)[number]["id"];
 export const RANGE_SPREAD = 0.15;
 
 export type EstimateInput = {
-  services: ServiceId[];
+  service: ServiceId | "";
   sizeClass: SizeClassId | "";
 };
 
@@ -35,24 +38,21 @@ export type Estimate = {
 };
 
 export function computeEstimate(input: EstimateInput): Estimate {
-  const base = input.services.reduce((sum, id) => {
-    const service = SERVICES.find((s) => s.id === id);
-    return sum + (service?.price ?? 0);
-  }, 0);
+  const servicePrice =
+    SERVICES.find((s) => s.id === input.service)?.price ?? 0;
+  const sizeUpcharge =
+    SIZE_CLASSES.find((s) => s.id === input.sizeClass)?.upcharge ?? 0;
 
-  const sizeMultiplier =
-    SIZE_CLASSES.find((s) => s.id === input.sizeClass)?.multiplier ?? 1;
-
-  const mid = base * sizeMultiplier;
+  const mid = input.service ? servicePrice + sizeUpcharge : 0;
   const low = Math.round((mid * (1 - RANGE_SPREAD)) / 5) * 5;
   const high = Math.round((mid * (1 + RANGE_SPREAD)) / 5) * 5;
 
   return {
-    base,
+    base: servicePrice,
     mid: Math.round(mid),
     low,
     high,
-    hasSelection: input.services.length > 0,
+    hasSelection: input.service !== "",
   };
 }
 
@@ -65,7 +65,7 @@ export function formatCurrency(value: number): string {
 }
 
 // Helpers so labels can be resolved from stored ids without duplicating maps.
-export const serviceLabel = (id: ServiceId) =>
+export const serviceLabel = (id: ServiceId | "") =>
   SERVICES.find((s) => s.id === id)?.label ?? id;
 export const sizeClassLabel = (id: SizeClassId | "") =>
   SIZE_CLASSES.find((s) => s.id === id)?.label ?? id;

@@ -19,7 +19,7 @@ export type QuotePayload = {
   vehicleMake: string;
   vehicleModel: string;
   sizeClass: string;
-  services: string[];
+  service: string;
   addressStreet: string;
   addressCity: string;
   addressZip: string;
@@ -46,11 +46,11 @@ export async function submitQuote(
     return { error: "Please enter a valid email address." };
   }
 
-  const services = (payload.services ?? []).filter((s): s is ServiceId =>
-    validServiceIds.has(s as ServiceId),
-  );
-  if (services.length === 0) {
-    return { error: "Select at least one service." };
+  const service = validServiceIds.has(payload.service as ServiceId)
+    ? (payload.service as ServiceId)
+    : "";
+  if (!service) {
+    return { error: "Choose a service." };
   }
 
   const sizeClass = validSizeIds.has(payload.sizeClass as SizeClassId)
@@ -67,7 +67,7 @@ export async function submitQuote(
   const serviceAddress = `${street}, ${city} ${zip}`;
 
   // Server recomputes the estimate so the saved price can't be tampered with.
-  const estimate = computeEstimate({ services, sizeClass });
+  const estimate = computeEstimate({ service, sizeClass });
 
   // Generate the row id ourselves so we know it without a SELECT (RLS allows
   // INSERT only). This id also seeds the notification idempotency key, so a
@@ -84,7 +84,7 @@ export async function submitQuote(
     vehicle_make: payload.vehicleMake?.trim() || null,
     vehicle_model: payload.vehicleModel?.trim() || null,
     size_class: sizeClass,
-    services,
+    service,
     service_address: serviceAddress,
     notes: payload.notes?.trim() || null,
     estimate_low: estimate.low,
@@ -112,7 +112,7 @@ export async function submitQuote(
       vehicleMake: payload.vehicleMake?.trim() ?? "",
       vehicleModel: payload.vehicleModel?.trim() ?? "",
       sizeClass,
-      services,
+      service,
       serviceAddress,
       notes: payload.notes?.trim() ?? "",
       estimate,

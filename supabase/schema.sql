@@ -11,7 +11,7 @@ create table if not exists public.quote_requests (
   vehicle_make  text,
   vehicle_model text,
   size_class    text        not null,
-  services      jsonb       not null default '[]'::jsonb,
+  service       text,
   service_address text,
   notes         text,
   estimate_low  integer     not null,

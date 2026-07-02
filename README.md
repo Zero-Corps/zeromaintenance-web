@@ -27,8 +27,8 @@ The estimate is computed by `lib/quote.ts` and shown live as the visitor picks
 options. The same logic runs **again on the server** (in `app/quote/actions.ts`)
 so the stored price is authoritative and can't be tampered with from the client.
 
-- Base prices: Interior Service $50, Exterior Service $50, Full Detail $80 (launch pricing, reg. $100)
-- Size multiplier: Sedan ×1.0, SUV ×1.2, Truck ×1.3, XL ×1.5
+- Customer picks exactly one service: Interior Service $50, Exterior Service $50, or Full Detail $80 (launch pricing, reg. $100)
+- Size upcharge: Sedan +$0, SUV / Truck / XL +$25
 - Displayed as a ±15% range; final price confirmed after inspection
 
 On submit, a Server Action inserts the full request into the Supabase
@@ -42,7 +42,7 @@ Every saved quote triggers a notification to the business (`lib/notifications.ts
 called from the Server Action after the insert succeeds:
 
 - **Email** via [Resend](https://resend.com) — a formatted summary with the
-  customer's contact info, vehicle, services, service address, notes, and
+  customer's contact info, vehicle, service, service address, notes, and
   estimate. `replyTo` is set to the customer so you can reply directly.
 - **SMS** via [Twilio](https://twilio.com) — a short text summary.
 

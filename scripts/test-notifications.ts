@@ -27,13 +27,10 @@ try {
 }
 
 async function main() {
-  const services = ["exterior", "full"] as const;
+  const service = "full" as const;
   const sizeClass = "suv" as const;
 
-  const estimate = computeEstimate({
-    services: [...services],
-    sizeClass,
-  });
+  const estimate = computeEstimate({ service, sizeClass });
 
   const result = await sendQuoteNotifications({
     id: `smoke-test-${Date.now()}`,
@@ -44,7 +41,7 @@ async function main() {
     vehicleMake: "Toyota",
     vehicleModel: "4Runner",
     sizeClass,
-    services: [...services],
+    service,
     serviceAddress: "123 Main St, Decatur 76234",
     notes: "Smoke test — please ignore.",
     estimate,

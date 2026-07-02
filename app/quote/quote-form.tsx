@@ -6,6 +6,7 @@ import {
   SIZE_CLASSES,
   computeEstimate,
   formatCurrency,
+  serviceLabel,
   type ServiceId,
   type SizeClassId,
 } from "@/lib/quote";
@@ -30,22 +31,16 @@ export function QuoteForm() {
   const [vehicleMake, setVehicleMake] = useState("");
   const [vehicleModel, setVehicleModel] = useState("");
   const [sizeClass, setSizeClass] = useState<SizeClassId | "">("");
-  const [services, setServices] = useState<ServiceId[]>([]);
+  const [service, setService] = useState<ServiceId | "">("");
   const [addressStreet, setAddressStreet] = useState("");
   const [addressCity, setAddressCity] = useState("");
   const [addressZip, setAddressZip] = useState("");
   const [notes, setNotes] = useState("");
 
   const estimate = useMemo(
-    () => computeEstimate({ services, sizeClass }),
-    [services, sizeClass],
+    () => computeEstimate({ service, sizeClass }),
+    [service, sizeClass],
   );
-
-  function toggleService(id: ServiceId) {
-    setServices((prev) =>
-      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id],
-    );
-  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -57,7 +52,7 @@ export function QuoteForm() {
       vehicleMake,
       vehicleModel,
       sizeClass,
-      services,
+      service,
       addressStreet,
       addressCity,
       addressZip,
@@ -250,18 +245,23 @@ export function QuoteForm() {
           </div>
         </fieldset>
 
-        {/* Services */}
+        {/* Service */}
         <fieldset className="border border-line bg-panel/40 p-6">
-          <legend className="spec-label px-2">Services</legend>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {SERVICES.map((service) => {
-              const active = services.includes(service.id);
+          <legend className="spec-label px-2">Service</legend>
+          <div
+            role="radiogroup"
+            aria-label="Service"
+            className="grid gap-3 sm:grid-cols-3"
+          >
+            {SERVICES.map((option) => {
+              const active = service === option.id;
               return (
                 <button
-                  key={service.id}
+                  key={option.id}
                   type="button"
-                  onClick={() => toggleService(service.id)}
-                  aria-pressed={active}
+                  role="radio"
+                  onClick={() => setService(option.id)}
+                  aria-checked={active}
                   className={`flex items-center justify-between border px-4 py-4 text-left transition-colors ${
                     active
                       ? "border-accent bg-accent/10"
@@ -270,18 +270,18 @@ export function QuoteForm() {
                 >
                   <span className="flex items-center gap-3">
                     <span
-                      className={`flex h-5 w-5 items-center justify-center border text-xs ${
-                        active
-                          ? "border-accent bg-accent text-white"
-                          : "border-muted"
+                      className={`flex h-5 w-5 items-center justify-center rounded-full border ${
+                        active ? "border-accent" : "border-muted"
                       }`}
                     >
-                      {active ? "✓" : ""}
+                      {active && (
+                        <span className="h-2.5 w-2.5 rounded-full bg-accent" />
+                      )}
                     </span>
-                    <span className="font-medium">{service.label}</span>
+                    <span className="font-medium">{option.label}</span>
                   </span>
                   <span className="font-mono text-sm text-accent-glow">
-                    {formatCurrency(service.price)}
+                    {formatCurrency(option.price)}
                   </span>
                 </button>
               );
@@ -332,11 +332,9 @@ export function QuoteForm() {
 
           <div className="mt-6 space-y-2 border-t border-line pt-5 font-mono text-xs text-muted">
             <div className="flex justify-between">
-              <span>Services</span>
+              <span>Service</span>
               <span className="text-fg">
-                {services.length === 0
-                  ? "—"
-                  : `${services.length} selected`}
+                {service ? serviceLabel(service) : "—"}
               </span>
             </div>
             <div className="flex justify-between">
@@ -358,10 +356,14 @@ export function QuoteForm() {
 
           <button
             type="submit"
-            disabled={isPending}
+            disabled={isPending || !service}
             className="mt-6 w-full bg-accent px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-accent-glow disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isPending ? "Submitting…" : "Request this quote"}
+            {isPending
+              ? "Submitting…"
+              : !service
+                ? "Select a service"
+                : "Request this quote"}
           </button>
           <p className="mt-3 text-center font-mono text-xs text-muted">
             No payment now — this just sends us your request.
