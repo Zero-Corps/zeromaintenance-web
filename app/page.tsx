@@ -68,18 +68,14 @@ export default function Home() {
         <section className="relative overflow-hidden border-b border-line">
           <div className="hero-glow pointer-events-none absolute inset-0" />
           <div className="relative mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
-            <p className="spec-label animate-rise">
-              Mobile Auto Detailing — Wise County, TX
-            </p>
+            <p className="spec-label animate-rise">Mobile Auto Detailing</p>
             <h1 className="animate-rise-delay-1 mt-5 max-w-4xl font-display text-5xl sm:text-7xl lg:text-8xl">
               Your car, detailed.
               <br />
               <span className="text-accent">At your driveway.</span>
             </h1>
             <p className="animate-rise-delay-2 mt-6 max-w-xl text-lg text-muted">
-              Professional interior and exterior detailing that comes to you.
-              Launch pricing from $50 — full detail $80. Instant estimate in
-              under a minute.
+              Professional auto detailing that comes to you.
             </p>
             <div className="animate-rise-delay-3 mt-9 flex flex-wrap items-center gap-4">
               <Link
@@ -105,17 +101,11 @@ export default function Home() {
         {/* Services */}
         <section id="services" className="border-b border-line">
           <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
-            <div className="flex items-end justify-between gap-6">
-              <div>
-                <p className="spec-label">What we do</p>
-                <h2 className="mt-3 font-display text-4xl sm:text-5xl">
-                  Services
-                </h2>
-              </div>
-              <p className="hidden max-w-xs text-sm text-muted sm:block">
-                Starting prices for a sedan. Your exact estimate is built on the
-                quote page.
-              </p>
+            <div>
+              <p className="spec-label">What we do</p>
+              <h2 className="mt-3 font-display text-4xl sm:text-5xl">
+                Services
+              </h2>
             </div>
 
             <div className="mt-12 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-3">

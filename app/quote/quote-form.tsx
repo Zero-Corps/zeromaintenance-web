@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   SERVICES,
   SIZE_CLASSES,
@@ -10,20 +10,13 @@ import {
   type ServiceId,
   type SizeClassId,
 } from "@/lib/quote";
-import { submitQuote, type SubmitState } from "./actions";
-
-const initialState: SubmitState = { error: null };
+import { submitQuote } from "./actions";
 
 const inputClass =
   "w-full rounded-none border border-line bg-panel px-3.5 py-2.5 text-fg placeholder:text-muted/60 outline-none transition-colors focus:border-accent";
 const labelClass = "spec-label mb-2 block";
 
 export function QuoteForm() {
-  const [state, formAction, isPending] = useActionState(
-    submitQuote,
-    initialState,
-  );
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -36,16 +29,14 @@ export function QuoteForm() {
   const [addressCity, setAddressCity] = useState("");
   const [addressZip, setAddressZip] = useState("");
   const [notes, setNotes] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const estimate = useMemo(() => computeEstimate({ service }), [service]);
 
-  // On a successful submit the action returns { success: true }. Show a
-  // confirmation toast and clear the form so the page never navigates away
-  // (no blank page), and the customer gets immediate in-place feedback.
-  useEffect(() => {
-    if (!state.success) return;
-    setShowToast(true);
+  function resetForm() {
     setName("");
     setEmail("");
     setPhone("");
@@ -58,26 +49,50 @@ export function QuoteForm() {
     setAddressCity("");
     setAddressZip("");
     setNotes("");
-    const timer = setTimeout(() => setShowToast(false), 9000);
-    return () => clearTimeout(timer);
-  }, [state]);
+  }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  // Call the server action directly and react in the handler (not an effect):
+  // on success we clear the form and pop a corner toast, so the page never
+  // navigates away and the customer gets immediate in-place feedback.
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    formAction({
-      name,
-      email,
-      phone,
-      vehicleYear,
-      vehicleMake,
-      vehicleModel,
-      sizeClass,
-      service,
-      addressStreet,
-      addressCity,
-      addressZip,
-      notes,
-    });
+    setError(null);
+    setIsPending(true);
+    try {
+      const result = await submitQuote(
+        { error: null },
+        {
+          name,
+          email,
+          phone,
+          vehicleYear,
+          vehicleMake,
+          vehicleModel,
+          sizeClass,
+          service,
+          addressStreet,
+          addressCity,
+          addressZip,
+          notes,
+        },
+      );
+
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+
+      resetForm();
+      setShowToast(true);
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+      toastTimer.current = setTimeout(() => setShowToast(false), 9000);
+    } catch {
+      setError(
+        "Something went wrong sending your request. Please try again.",
+      );
+    } finally {
+      setIsPending(false);
+    }
   }
 
   return (
@@ -403,12 +418,12 @@ export function QuoteForm() {
             </div>
           </div>
 
-          {state.error && (
+          {error && (
             <p
               role="alert"
               className="mt-5 border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300"
             >
-              {state.error}
+              {error}
             </p>
           )}
 

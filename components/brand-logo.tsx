@@ -36,7 +36,9 @@ export function BrandLogo({
         <span className="inline-block h-5 w-5 rotate-45 border-2 border-accent transition-colors group-hover:bg-accent" />
       )}
       {showWordmark && (
-        <span className={wordmarkClassName}>Zero Maintenance</span>
+        <span className={wordmarkClassName}>
+          Zero <span className="text-accent">Maintenance</span>
+        </span>
       )}
     </span>
   );

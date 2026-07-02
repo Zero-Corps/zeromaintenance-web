@@ -20,7 +20,7 @@ export function SiteFooter() {
             </span>
           </a>
           <p className="font-mono text-xs uppercase tracking-widest text-muted">
-            Mobile service · Wise County &amp; surrounding DFW
+            Serving Wise County and surrounding communities
           </p>
         </div>
 
