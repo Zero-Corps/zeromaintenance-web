@@ -1,7 +1,7 @@
 # Zero Maintenance — Mobile Auto Detailing
 
 Marketing site + quote-request tool for **Zero Maintenance**, a mobile car
-detailing venture by [ZeroCorps LLC](https://zerocorps.org) serving Wise County
+detailing venture by [ZeroCorps](https://zerocorps.org) serving Wise County
 and surrounding DFW communities. Visitors get an instant client-side estimate
 and submit a quote request that's saved to Supabase for the business to follow
 up on.

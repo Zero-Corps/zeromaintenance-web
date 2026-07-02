@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { WorkGallery } from "@/components/work-gallery";
 import { SERVICES, formatCurrency } from "@/lib/quote";
 
 const SERVICE_BLURBS: Record<string, string> = {
@@ -67,15 +68,18 @@ export default function Home() {
         <section className="relative overflow-hidden border-b border-line">
           <div className="hero-glow pointer-events-none absolute inset-0" />
           <div className="relative mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
-            <p className="spec-label animate-rise">Mobile Auto Detailing</p>
+            <p className="spec-label animate-rise">
+              Mobile Auto Detailing — Wise County, TX
+            </p>
             <h1 className="animate-rise-delay-1 mt-5 max-w-4xl font-display text-5xl sm:text-7xl lg:text-8xl">
-              Detailed once.
+              Your car, detailed.
               <br />
-              <span className="text-accent">Near-zero</span> upkeep.
+              <span className="text-accent">At your driveway.</span>
             </h1>
             <p className="animate-rise-delay-2 mt-6 max-w-xl text-lg text-muted">
-              We detail your vehicle so thoroughly that keeping it clean becomes
-              almost effortless. Get an instant estimate in under a minute.
+              Professional interior and exterior detailing that comes to you.
+              Launch pricing from $50 — full detail $80. Instant estimate in
+              under a minute.
             </p>
             <div className="animate-rise-delay-3 mt-9 flex flex-wrap items-center gap-4">
               <Link
@@ -149,6 +153,17 @@ export default function Home() {
                 );
               })}
             </div>
+          </div>
+        </section>
+
+        {/* Before / after gallery */}
+        <section id="work" className="border-b border-line">
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
+            <p className="spec-label">The proof</p>
+            <h2 className="mt-3 font-display text-4xl sm:text-5xl">
+              Recent work
+            </h2>
+            <WorkGallery />
           </div>
         </section>
 

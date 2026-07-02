@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Anton, Inter, JetBrains_Mono } from "next/font/google";
+import {
+  Anton,
+  Bricolage_Grotesque,
+  Inter,
+  JetBrains_Mono,
+} from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -18,10 +23,15 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Zero Maintenance — Mobile Auto Detailing",
   description:
-    "Mobile detailing done so well that upkeep drops to near zero. Serving Wise County and surrounding DFW communities. Get an instant estimate and request a quote. A ZeroCorps LLC venture.",
+    "Mobile detailing done so well that upkeep drops to near zero. Serving Wise County and surrounding DFW communities. Get an instant estimate and request a quote. A ZeroCorps venture.",
 };
 
 export default function RootLayout({
@@ -32,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${anton.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${anton.variable} ${jetbrainsMono.variable} ${bricolage.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-fg">
         {children}

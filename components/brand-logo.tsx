@@ -7,6 +7,8 @@ type BrandLogoProps = {
   imgClassName?: string;
   /** Tailwind classes for the wordmark text. */
   wordmarkClassName?: string;
+  /** When false, render only the logo mark (no "Zero Maintenance" wordmark). */
+  showWordmark?: boolean;
 };
 
 // Renders /logo.png with dark-theme blend styling. If the file hasn't been
@@ -15,6 +17,7 @@ type BrandLogoProps = {
 export function BrandLogo({
   imgClassName = "h-8",
   wordmarkClassName = "font-display text-xl tracking-wide",
+  showWordmark = true,
 }: BrandLogoProps) {
   const [imageOk, setImageOk] = useState(true);
 
@@ -31,7 +34,9 @@ export function BrandLogo({
       ) : (
         <span className="inline-block h-5 w-5 rotate-45 border-2 border-accent transition-colors group-hover:bg-accent" />
       )}
-      <span className={wordmarkClassName}>Zero Maintenance</span>
+      {showWordmark && (
+        <span className={wordmarkClassName}>Zero Maintenance</span>
+      )}
     </span>
   );
 }
