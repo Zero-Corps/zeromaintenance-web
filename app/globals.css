@@ -52,22 +52,17 @@ body {
   color: var(--color-muted);
 }
 
-/* Logo blending onto the dark theme. `screen` drops any black background box
-   in the PNG; the subtle glow ties it into the accent color. See public/README.md
-   for how to adjust for white-background logos. */
-.logo-blend {
-  mix-blend-mode: screen;
-  filter: drop-shadow(
-    0 0 10px color-mix(in srgb, var(--color-accent-glow) 28%, transparent)
-  );
+/* The Ø mark (logo-mark.png) is a transparent-background white glyph, so it
+   sits directly on the page background — no tile/container. A faint white halo
+   melts it into the dark theme instead of letting it float flatly. */
+.logo-mark {
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.25));
   transition: filter 0.2s ease;
 }
 
-a:hover > .flex > .logo-blend,
-.group:hover .logo-blend {
-  filter: drop-shadow(
-    0 0 14px color-mix(in srgb, var(--color-accent-glow) 45%, transparent)
-  );
+a:hover > .flex > .logo-mark,
+.group:hover .logo-mark {
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.4));
 }
 
 /* Soft blue radial glow used behind the hero */

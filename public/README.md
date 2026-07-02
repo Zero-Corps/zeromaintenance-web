@@ -1,37 +1,32 @@
 # Static assets
 
-Drag-and-drop your logo here.
-
 ## Logo
 
-Drop your logo file in this folder named exactly:
+Two files are used:
 
 ```
-public/logo.png
+public/logo.png        # source master — white Ø on a black square
+public/logo-mark.png   # generated — transparent-background white Ø (what the site shows)
 ```
 
-That's it — the header and footer pick it up automatically. Until the file
-exists, the site falls back to the built-in diamond mark, so nothing looks
-broken while you're setting up.
+The header and footer render `logo-mark.png` directly on the dark background
+(no tile/container) with a soft white halo, via the `.logo-mark` utility in
+`app/globals.css`. Until `logo-mark.png` exists, the site falls back to the
+built-in diamond mark so nothing looks broken.
 
-### How it blends in
+### Regenerating the transparent mark
 
-The logo is rendered with the `.logo-blend` utility (defined in
-`app/globals.css`) so it sits naturally on the dark blue-black background:
+If you replace `logo.png` with a new master, regenerate the transparent mark:
 
-- `mix-blend-mode: screen` makes any **black/dark background box** in the PNG
-  disappear (ideal for a light or blue logo on the dark theme).
-- a subtle blue drop-shadow glow ties it into the accent color.
+```
+npx tsx scripts/make-logo-mark.ts
+```
 
-Tips depending on your PNG:
+That script forces every pixel white and sets alpha from the source luminance,
+so the black background becomes fully transparent and the anti-aliased edges
+keep a smooth halo (no jagged cutout).
 
-- **Transparent background, light/white or blue logo** → works great as-is.
-- **Logo on a solid _white_ box** → open `app/globals.css` and change
-  `mix-blend-mode: screen` to `multiply` in `.logo-blend` so the white drops out
-  instead.
-- **Dark logo on transparent** → it'll be hard to see on the dark theme; use a
-  light/white version, or remove the `.logo-blend` class from
-  `components/brand-logo.tsx`.
-
-A transparent PNG at roughly 2–3× the display height (the header shows it at
-~32px tall) keeps it crisp on high-DPI screens.
+- If your master already has a **transparent background**, you can point
+  `components/brand-logo.tsx` straight at it and skip the script.
+- Use a master at roughly 2–3× the display height (the header shows it at
+  ~32px tall) to stay crisp on high-DPI screens.
