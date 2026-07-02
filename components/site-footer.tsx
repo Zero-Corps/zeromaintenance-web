@@ -13,10 +13,7 @@ export function SiteFooter() {
           >
             <BrandLogo showWordmark={false} imgClassName="h-6" />
             <span className="font-brand text-sm font-semibold uppercase tracking-[0.18em] text-muted transition-colors group-hover:text-fg">
-              Powered by{" "}
-              <span className="text-accent-glow transition-colors group-hover:text-accent">
-                ZeroCorps
-              </span>
+              Powered by ZeroCorps
             </span>
           </a>
           <p className="font-mono text-xs uppercase tracking-widest text-muted">
