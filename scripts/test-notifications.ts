@@ -30,7 +30,7 @@ async function main() {
   const service = "full" as const;
   const sizeClass = "suv" as const;
 
-  const estimate = computeEstimate({ service, sizeClass });
+  const estimate = computeEstimate({ service });
 
   const result = await sendQuoteNotifications({
     id: `smoke-test-${Date.now()}`,

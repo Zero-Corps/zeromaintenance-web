@@ -67,7 +67,7 @@ export async function submitQuote(
   const serviceAddress = `${street}, ${city} ${zip}`;
 
   // Server recomputes the estimate so the saved price can't be tampered with.
-  const estimate = computeEstimate({ service, sizeClass });
+  const estimate = computeEstimate({ service });
 
   // Generate the row id ourselves so we know it without a SELECT (RLS allows
   // INSERT only). This id also seeds the notification idempotency key, so a

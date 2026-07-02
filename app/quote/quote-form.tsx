@@ -37,10 +37,7 @@ export function QuoteForm() {
   const [addressZip, setAddressZip] = useState("");
   const [notes, setNotes] = useState("");
 
-  const estimate = useMemo(
-    () => computeEstimate({ service, sizeClass }),
-    [service, sizeClass],
-  );
+  const estimate = useMemo(() => computeEstimate({ service }), [service]);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

@@ -28,7 +28,7 @@ options. The same logic runs **again on the server** (in `app/quote/actions.ts`)
 so the stored price is authoritative and can't be tampered with from the client.
 
 - Customer picks exactly one service: Interior Service $50, Exterior Service $50, or Full Detail $80 (launch pricing, reg. $100)
-- Size upcharge: Sedan +$0, SUV / Truck / XL +$25
+- Flat pricing — vehicle size is collected as info but does not change the estimate
 - Displayed as a ±15% range; final price confirmed after inspection
 
 On submit, a Server Action inserts the full request into the Supabase

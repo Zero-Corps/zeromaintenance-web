@@ -9,24 +9,21 @@ export const SERVICES = [
 
 export type ServiceId = (typeof SERVICES)[number]["id"];
 
-// Flat upcharge for larger vehicles — added on top of the selected service.
-export const SIZE_UPCHARGE = 25;
-
+// Vehicle size is collected as info only — it does not change the price.
 export const SIZE_CLASSES = [
-  { id: "sedan", label: "Sedan", upcharge: 0 },
-  { id: "suv", label: "SUV", upcharge: SIZE_UPCHARGE },
-  { id: "truck", label: "Truck", upcharge: SIZE_UPCHARGE },
-  { id: "xl", label: "XL (van / large SUV)", upcharge: SIZE_UPCHARGE },
+  { id: "sedan", label: "Sedan" },
+  { id: "suv", label: "SUV" },
+  { id: "truck", label: "Truck" },
+  { id: "xl", label: "XL (van / large SUV)" },
 ] as const;
 
 export type SizeClassId = (typeof SIZE_CLASSES)[number]["id"];
 
-// Estimate is shown as a range of ±15% around the computed midpoint.
+// Estimate is shown as a range of ±15% around the flat service price.
 export const RANGE_SPREAD = 0.15;
 
 export type EstimateInput = {
   service: ServiceId | "";
-  sizeClass: SizeClassId | "";
 };
 
 export type Estimate = {
@@ -40,10 +37,8 @@ export type Estimate = {
 export function computeEstimate(input: EstimateInput): Estimate {
   const servicePrice =
     SERVICES.find((s) => s.id === input.service)?.price ?? 0;
-  const sizeUpcharge =
-    SIZE_CLASSES.find((s) => s.id === input.sizeClass)?.upcharge ?? 0;
 
-  const mid = input.service ? servicePrice + sizeUpcharge : 0;
+  const mid = input.service ? servicePrice : 0;
   const low = Math.round((mid * (1 - RANGE_SPREAD)) / 5) * 5;
   const high = Math.round((mid * (1 + RANGE_SPREAD)) / 5) * 5;
 
