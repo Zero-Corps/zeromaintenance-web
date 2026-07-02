@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { sendQuoteNotifications } from "@/lib/notifications";
 import {
@@ -26,7 +25,7 @@ export type QuotePayload = {
   notes: string;
 };
 
-export type SubmitState = { error: string | null };
+export type SubmitState = { error: string | null; success?: boolean };
 
 const validServiceIds = new Set(SERVICES.map((s) => s.id));
 const validSizeIds = new Set(SIZE_CLASSES.map((s) => s.id));
@@ -124,5 +123,5 @@ export async function submitQuote(
     );
   }
 
-  redirect("/quote/success");
+  return { error: null, success: true };
 }

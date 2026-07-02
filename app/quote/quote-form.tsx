@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import {
   SERVICES,
   SIZE_CLASSES,
@@ -36,8 +36,31 @@ export function QuoteForm() {
   const [addressCity, setAddressCity] = useState("");
   const [addressZip, setAddressZip] = useState("");
   const [notes, setNotes] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   const estimate = useMemo(() => computeEstimate({ service }), [service]);
+
+  // On a successful submit the action returns { success: true }. Show a
+  // confirmation toast and clear the form so the page never navigates away
+  // (no blank page), and the customer gets immediate in-place feedback.
+  useEffect(() => {
+    if (!state.success) return;
+    setShowToast(true);
+    setName("");
+    setEmail("");
+    setPhone("");
+    setVehicleYear("");
+    setVehicleMake("");
+    setVehicleModel("");
+    setSizeClass("");
+    setService("");
+    setAddressStreet("");
+    setAddressCity("");
+    setAddressZip("");
+    setNotes("");
+    const timer = setTimeout(() => setShowToast(false), 9000);
+    return () => clearTimeout(timer);
+  }, [state]);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -58,10 +81,40 @@ export function QuoteForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="grid gap-10 lg:grid-cols-[1fr_360px]"
-    >
+    <>
+      {showToast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="animate-rise fixed right-4 top-20 z-[60] w-[calc(100%-2rem)] max-w-sm sm:right-6"
+        >
+          <div className="flex items-start gap-3 border border-accent/50 bg-panel-2 px-4 py-3.5 shadow-xl shadow-black/50">
+            <span className="mt-0.5 flex h-6 w-6 flex-none items-center justify-center rounded-full border border-accent text-sm text-accent">
+              ✓
+            </span>
+            <div className="text-sm">
+              <p className="font-semibold text-fg">Quote request received</p>
+              <p className="mt-1 text-muted">
+                Thanks! We&apos;ll reach out shortly to confirm details — watch
+                your texts, we&apos;ll ask for photos there.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowToast(false)}
+              aria-label="Dismiss"
+              className="ml-1 flex-none text-muted transition-colors hover:text-fg"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
+      <form
+        onSubmit={handleSubmit}
+        className="grid gap-10 lg:grid-cols-[1fr_360px]"
+      >
       {/* Form fields */}
       <div className="flex flex-col gap-8">
         {/* Contact */}
@@ -375,6 +428,7 @@ export function QuoteForm() {
           </p>
         </div>
       </div>
-    </form>
+      </form>
+    </>
   );
 }
