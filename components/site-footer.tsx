@@ -16,8 +16,10 @@ export function SiteFooter() {
               Powered by ZeroCorps
             </span>
           </a>
-          <p className="font-mono text-xs uppercase tracking-widest text-muted">
-            Serving Wise County and surrounding communities
+          <p className="max-w-md font-mono text-xs leading-relaxed text-muted">
+            Based in Wise County, TX — serving Decatur, Bridgeport, Boyd, Rhome,
+            Denton, and northwest Fort Worth. Just outside the area? Ask —
+            we&apos;re mobile.
           </p>
         </div>
 

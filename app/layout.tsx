@@ -29,9 +29,9 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "Zero Maintenance — Mobile Auto Detailing",
+  title: "Zero Maintenance — Mobile Auto Detailing | Wise County & DFW",
   description:
-    "Mobile detailing done so well that upkeep drops to near zero. Serving Wise County and surrounding DFW communities. Get an instant estimate and request a quote. A ZeroCorps venture.",
+    "Mobile detailing done so well that upkeep drops to near zero. Based in Wise County, TX — serving Decatur, Bridgeport, Boyd, Rhome, Denton, and northwest Fort Worth. Get an instant estimate and request a quote. A ZeroCorps venture.",
 };
 
 export default function RootLayout({

@@ -12,13 +12,13 @@ export function SiteHeader() {
         <nav className="flex items-center gap-6">
           <Link
             href="/#services"
-            className="hidden text-sm text-muted transition-colors hover:text-fg sm:block"
+            className="hidden font-display text-lg tracking-wide text-muted transition-colors hover:text-fg sm:block"
           >
             Services
           </Link>
           <Link
             href="/#process"
-            className="hidden text-sm text-muted transition-colors hover:text-fg sm:block"
+            className="hidden font-display text-lg tracking-wide text-muted transition-colors hover:text-fg sm:block"
           >
             Process
           </Link>
@@ -26,7 +26,7 @@ export function SiteHeader() {
             href="/quote"
             className="rounded-none bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-glow"
           >
-            Get a quote
+            Quote
           </Link>
         </nav>
       </div>

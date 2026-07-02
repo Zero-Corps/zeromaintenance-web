@@ -75,7 +75,8 @@ export default function Home() {
               <span className="text-accent">At your driveway.</span>
             </h1>
             <p className="animate-rise-delay-2 mt-6 max-w-xl text-lg text-muted">
-              Professional auto detailing that comes to you.
+              Professional auto detailing that comes to you. Launch pricing
+              from $50 — full detail $80.
             </p>
             <div className="animate-rise-delay-3 mt-9 flex flex-wrap items-center gap-4">
               <Link
@@ -91,9 +92,10 @@ export default function Home() {
                 View services
               </Link>
             </div>
-            <p className="animate-rise-delay-3 mt-9 font-mono text-xs uppercase tracking-widest text-muted">
-              Mobile service · Serving Wise County and surrounding DFW
-              communities
+            <p className="animate-rise-delay-3 mt-9 max-w-xl font-mono text-xs leading-relaxed text-muted">
+              Based in Wise County, TX — serving Decatur, Bridgeport, Boyd,
+              Rhome, Denton, and northwest Fort Worth. Just outside the area?
+              Ask — we&apos;re mobile.
             </p>
           </div>
         </section>

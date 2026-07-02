@@ -232,10 +232,9 @@ export function QuoteForm() {
               </div>
             </div>
             <p className="text-xs text-muted">
-              We&apos;re a mobile service based in Wise County, TX — we come to
-              you. We currently serve Wise County and nearby communities in
-              Denton and Tarrant counties. If you&apos;re just outside that
-              area, submit anyway and we&apos;ll confirm.
+              Based in Wise County, TX — serving Decatur, Bridgeport, Boyd,
+              Rhome, Denton, and northwest Fort Worth. Just outside the area?
+              Ask — we&apos;re mobile.
             </p>
           </div>
         </fieldset>
