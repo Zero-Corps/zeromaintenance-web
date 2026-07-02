@@ -1,10 +1,8 @@
 import { Resend } from "resend";
 import {
-  conditionLabel,
   formatCurrency,
   serviceLabel,
   sizeClassLabel,
-  type ConditionId,
   type Estimate,
   type ServiceId,
   type SizeClassId,
@@ -21,7 +19,7 @@ export type QuoteNotification = {
   vehicleModel: string;
   sizeClass: SizeClassId;
   services: ServiceId[];
-  condition: ConditionId;
+  serviceAddress: string;
   notes: string;
   estimate: Estimate;
 };
@@ -90,7 +88,7 @@ async function sendEmail(q: QuoteNotification): Promise<ChannelResult> {
         <tr><td style="padding:6px 0;color:#8A90A2">Vehicle</td><td style="padding:6px 0">${vehicle}</td></tr>
         <tr><td style="padding:6px 0;color:#8A90A2">Size class</td><td style="padding:6px 0">${sizeClassLabel(q.sizeClass)}</td></tr>
         <tr><td style="padding:6px 0;color:#8A90A2">Services</td><td style="padding:6px 0">${serviceList}</td></tr>
-        <tr><td style="padding:6px 0;color:#8A90A2">Condition</td><td style="padding:6px 0">${conditionLabel(q.condition)}</td></tr>
+        <tr><td style="padding:6px 0;color:#8A90A2">Service address</td><td style="padding:6px 0">${q.serviceAddress}</td></tr>
         <tr><td style="padding:6px 0;color:#8A90A2;vertical-align:top">Notes</td><td style="padding:6px 0">${q.notes?.trim() ? q.notes : "—"}</td></tr>
       </table>
       <p style="color:#8A90A2;font-size:12px;margin-top:24px">Estimate is a ±15% range; confirm final price after inspection.</p>
@@ -104,7 +102,7 @@ async function sendEmail(q: QuoteNotification): Promise<ChannelResult> {
       `Vehicle: ${vehicle}`,
       `Size class: ${sizeClassLabel(q.sizeClass)}`,
       `Services: ${serviceList}`,
-      `Condition: ${conditionLabel(q.condition)}`,
+      `Service address: ${q.serviceAddress}`,
       `Notes: ${q.notes?.trim() || "—"}`,
     ].join("\n");
 
@@ -162,6 +160,7 @@ async function sendSms(q: QuoteNotification): Promise<ChannelResult> {
       `${q.name} · ${q.phone}`,
       `${vehicleString(q)} (${sizeClassLabel(q.sizeClass)})`,
       `${serviceList}`,
+      `@ ${q.serviceAddress}`,
       `Est ${estimateRange(q)}`,
     ].join("\n");
 

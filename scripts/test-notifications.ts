@@ -27,14 +27,12 @@ try {
 }
 
 async function main() {
-  const services = ["exterior", "ceramic"] as const;
+  const services = ["exterior", "full"] as const;
   const sizeClass = "suv" as const;
-  const condition = "fair" as const;
 
   const estimate = computeEstimate({
     services: [...services],
     sizeClass,
-    condition,
   });
 
   const result = await sendQuoteNotifications({
@@ -47,8 +45,8 @@ async function main() {
     vehicleModel: "4Runner",
     sizeClass,
     services: [...services],
-    condition,
-    notes: "Smoke test — please ignore. Light swirls on the hood.",
+    serviceAddress: "123 Main St, Decatur 76234",
+    notes: "Smoke test — please ignore.",
     estimate,
   });
 

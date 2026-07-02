@@ -5,10 +5,8 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { sendQuoteNotifications } from "@/lib/notifications";
 import {
   computeEstimate,
-  CONDITIONS,
   SERVICES,
   SIZE_CLASSES,
-  type ConditionId,
   type ServiceId,
   type SizeClassId,
 } from "@/lib/quote";
@@ -22,7 +20,9 @@ export type QuotePayload = {
   vehicleModel: string;
   sizeClass: string;
   services: string[];
-  condition: string;
+  addressStreet: string;
+  addressCity: string;
+  addressZip: string;
   notes: string;
 };
 
@@ -30,7 +30,6 @@ export type SubmitState = { error: string | null };
 
 const validServiceIds = new Set(SERVICES.map((s) => s.id));
 const validSizeIds = new Set(SIZE_CLASSES.map((s) => s.id));
-const validConditionIds = new Set(CONDITIONS.map((c) => c.id));
 
 export async function submitQuote(
   _prev: SubmitState,
@@ -57,15 +56,18 @@ export async function submitQuote(
   const sizeClass = validSizeIds.has(payload.sizeClass as SizeClassId)
     ? (payload.sizeClass as SizeClassId)
     : "";
-  const condition = validConditionIds.has(payload.condition as ConditionId)
-    ? (payload.condition as ConditionId)
-    : "";
-
   if (!sizeClass) return { error: "Choose a vehicle size class." };
-  if (!condition) return { error: "Choose the paint condition." };
+
+  const street = payload.addressStreet?.trim();
+  const city = payload.addressCity?.trim();
+  const zip = payload.addressZip?.trim();
+  if (!street || !city || !zip) {
+    return { error: "A service address (street, city, and zip) is required." };
+  }
+  const serviceAddress = `${street}, ${city} ${zip}`;
 
   // Server recomputes the estimate so the saved price can't be tampered with.
-  const estimate = computeEstimate({ services, sizeClass, condition });
+  const estimate = computeEstimate({ services, sizeClass });
 
   // Generate the row id ourselves so we know it without a SELECT (RLS allows
   // INSERT only). This id also seeds the notification idempotency key, so a
@@ -83,7 +85,7 @@ export async function submitQuote(
     vehicle_model: payload.vehicleModel?.trim() || null,
     size_class: sizeClass,
     services,
-    condition,
+    service_address: serviceAddress,
     notes: payload.notes?.trim() || null,
     estimate_low: estimate.low,
     estimate_high: estimate.high,
@@ -111,7 +113,7 @@ export async function submitQuote(
       vehicleModel: payload.vehicleModel?.trim() ?? "",
       sizeClass,
       services,
-      condition,
+      serviceAddress,
       notes: payload.notes?.trim() ?? "",
       estimate,
     });

@@ -19,9 +19,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Zero Maintenance — Detailing & Ceramic Coating",
+  title: "Zero Maintenance — Mobile Auto Detailing",
   description:
-    "Detail + ceramic coating done so well that upkeep drops to near zero. Get an instant estimate and request a quote. A ZeroCorps LLC venture.",
+    "Mobile detailing done so well that upkeep drops to near zero. Serving Wise County and surrounding DFW communities. Get an instant estimate and request a quote. A ZeroCorps LLC venture.",
 };
 
 export default function RootLayout({

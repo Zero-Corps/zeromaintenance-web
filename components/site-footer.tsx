@@ -8,8 +8,10 @@ export function SiteFooter() {
         <div className="max-w-sm">
           <BrandLogo imgClassName="h-7" wordmarkClassName="font-display text-lg" />
           <p className="mt-3 text-sm text-muted">
-            Detail and ceramic coating done so well that upkeep drops to near
-            zero.
+            Detailing done so well that upkeep drops to near zero.
+          </p>
+          <p className="mt-3 font-mono text-xs uppercase tracking-widest text-muted">
+            Mobile service · Serving Wise County and surrounding DFW communities
           </p>
         </div>
 

@@ -6,7 +6,7 @@ import { QuoteForm } from "./quote-form";
 export const metadata: Metadata = {
   title: "Get a quote — Zero Maintenance",
   description:
-    "Build an instant estimate for detailing and ceramic coating, then send us your quote request.",
+    "Build an instant estimate for interior, exterior, and full-detail service, then send us your quote request.",
 };
 
 export default function QuotePage() {
@@ -29,7 +29,7 @@ export default function QuotePage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8">
+        <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
           <QuoteForm />
         </section>
       </main>

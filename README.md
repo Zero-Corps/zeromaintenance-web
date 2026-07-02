@@ -1,9 +1,10 @@
-# Zero Maintenance — Detailing & Ceramic Coating
+# Zero Maintenance — Mobile Auto Detailing
 
-Marketing site + quote-request tool for **Zero Maintenance**, a car detailing &
-ceramic coating venture by [ZeroCorps LLC](https://zerocorps.org). Visitors get
-an instant client-side estimate and submit a quote request that's saved to
-Supabase for the business to follow up on.
+Marketing site + quote-request tool for **Zero Maintenance**, a mobile car
+detailing venture by [ZeroCorps LLC](https://zerocorps.org) serving Wise County
+and surrounding DFW communities. Visitors get an instant client-side estimate
+and submit a quote request that's saved to Supabase for the business to follow
+up on.
 
 ## Stack
 
@@ -26,9 +27,8 @@ The estimate is computed by `lib/quote.ts` and shown live as the visitor picks
 options. The same logic runs **again on the server** (in `app/quote/actions.ts`)
 so the stored price is authoritative and can't be tampered with from the client.
 
-- Base prices: Exterior $149, Interior $129, Ceramic $699, Paint Correction $349
+- Base prices: Interior Service $50, Exterior Service $50, Full Detail $80 (launch pricing, reg. $100)
 - Size multiplier: Sedan ×1.0, SUV ×1.2, Truck ×1.3, XL ×1.5
-- Condition surcharge: Good +0%, Fair +10%, Rough +25%
 - Displayed as a ±15% range; final price confirmed after inspection
 
 On submit, a Server Action inserts the full request into the Supabase
@@ -42,8 +42,8 @@ Every saved quote triggers a notification to the business (`lib/notifications.ts
 called from the Server Action after the insert succeeds:
 
 - **Email** via [Resend](https://resend.com) — a formatted summary with the
-  customer's contact info, vehicle, services, condition, notes, and estimate.
-  `replyTo` is set to the customer so you can reply directly.
+  customer's contact info, vehicle, services, service address, notes, and
+  estimate. `replyTo` is set to the customer so you can reply directly.
 - **SMS** via [Twilio](https://twilio.com) — a short text summary.
 
 Both channels are **fail-safe**: each is isolated, a failure is logged but never

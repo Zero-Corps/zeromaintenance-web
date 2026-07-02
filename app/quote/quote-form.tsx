@@ -2,12 +2,10 @@
 
 import { useActionState, useMemo, useState } from "react";
 import {
-  CONDITIONS,
   SERVICES,
   SIZE_CLASSES,
   computeEstimate,
   formatCurrency,
-  type ConditionId,
   type ServiceId,
   type SizeClassId,
 } from "@/lib/quote";
@@ -33,12 +31,14 @@ export function QuoteForm() {
   const [vehicleModel, setVehicleModel] = useState("");
   const [sizeClass, setSizeClass] = useState<SizeClassId | "">("");
   const [services, setServices] = useState<ServiceId[]>([]);
-  const [condition, setCondition] = useState<ConditionId | "">("");
+  const [addressStreet, setAddressStreet] = useState("");
+  const [addressCity, setAddressCity] = useState("");
+  const [addressZip, setAddressZip] = useState("");
   const [notes, setNotes] = useState("");
 
   const estimate = useMemo(
-    () => computeEstimate({ services, sizeClass, condition }),
-    [services, sizeClass, condition],
+    () => computeEstimate({ services, sizeClass }),
+    [services, sizeClass],
   );
 
   function toggleService(id: ServiceId) {
@@ -58,7 +58,9 @@ export function QuoteForm() {
       vehicleModel,
       sizeClass,
       services,
-      condition,
+      addressStreet,
+      addressCity,
+      addressZip,
       notes,
     });
   }
@@ -117,6 +119,64 @@ export function QuoteForm() {
                 />
               </div>
             </div>
+          </div>
+        </fieldset>
+
+        {/* Service address */}
+        <fieldset className="border border-line bg-panel/40 p-6">
+          <legend className="spec-label px-2">Service address</legend>
+          <div className="grid gap-5">
+            <div>
+              <label className={labelClass} htmlFor="address-street">
+                Street address
+              </label>
+              <input
+                id="address-street"
+                className={inputClass}
+                value={addressStreet}
+                onChange={(e) => setAddressStreet(e.target.value)}
+                autoComplete="address-line1"
+                placeholder="123 Main St"
+                required
+              />
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label className={labelClass} htmlFor="address-city">
+                  City
+                </label>
+                <input
+                  id="address-city"
+                  className={inputClass}
+                  value={addressCity}
+                  onChange={(e) => setAddressCity(e.target.value)}
+                  autoComplete="address-level2"
+                  placeholder="Decatur"
+                  required
+                />
+              </div>
+              <div>
+                <label className={labelClass} htmlFor="address-zip">
+                  Zip
+                </label>
+                <input
+                  id="address-zip"
+                  inputMode="numeric"
+                  className={inputClass}
+                  value={addressZip}
+                  onChange={(e) => setAddressZip(e.target.value)}
+                  autoComplete="postal-code"
+                  placeholder="76234"
+                  required
+                />
+              </div>
+            </div>
+            <p className="text-xs text-muted">
+              We&apos;re a mobile service based in Wise County, TX — we come to
+              you. We currently serve Wise County and nearby communities in
+              Denton and Tarrant counties. If you&apos;re just outside that
+              area, submit anyway and we&apos;ll confirm.
+            </p>
           </div>
         </fieldset>
 
@@ -229,36 +289,6 @@ export function QuoteForm() {
           </div>
         </fieldset>
 
-        {/* Condition */}
-        <fieldset className="border border-line bg-panel/40 p-6">
-          <legend className="spec-label px-2">Paint condition</legend>
-          <div className="grid grid-cols-3 gap-3">
-            {CONDITIONS.map((c) => {
-              const active = condition === c.id;
-              return (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => setCondition(c.id)}
-                  aria-pressed={active}
-                  className={`border px-3 py-3 text-sm transition-colors ${
-                    active
-                      ? "border-accent bg-accent/10 text-fg"
-                      : "border-line bg-panel text-muted hover:border-accent-glow hover:text-fg"
-                  }`}
-                >
-                  {c.label}
-                  {c.surcharge > 0 && (
-                    <span className="ml-1 font-mono text-xs text-muted">
-                      +{Math.round(c.surcharge * 100)}%
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </fieldset>
-
         {/* Notes */}
         <fieldset className="border border-line bg-panel/40 p-6">
           <legend className="spec-label px-2">Notes (optional)</legend>
@@ -313,12 +343,6 @@ export function QuoteForm() {
               <span>Size class</span>
               <span className="text-fg">
                 {SIZE_CLASSES.find((s) => s.id === sizeClass)?.label ?? "—"}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span>Condition</span>
-              <span className="text-fg">
-                {CONDITIONS.find((c) => c.id === condition)?.label ?? "—"}
               </span>
             </div>
           </div>

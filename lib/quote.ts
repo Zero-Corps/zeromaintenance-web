@@ -2,10 +2,9 @@
 // server-side as the authoritative price when saving to Supabase.
 
 export const SERVICES = [
-  { id: "exterior", label: "Exterior Detail", price: 149 },
-  { id: "interior", label: "Interior Detail", price: 129 },
-  { id: "ceramic", label: "Ceramic Coating", price: 699 },
-  { id: "correction", label: "Paint Correction", price: 349 },
+  { id: "interior", label: "Interior Service", price: 50 },
+  { id: "exterior", label: "Exterior Service", price: 50 },
+  { id: "full", label: "Full Detail", price: 80, compareAt: 100 },
 ] as const;
 
 export type ServiceId = (typeof SERVICES)[number]["id"];
@@ -19,21 +18,12 @@ export const SIZE_CLASSES = [
 
 export type SizeClassId = (typeof SIZE_CLASSES)[number]["id"];
 
-export const CONDITIONS = [
-  { id: "good", label: "Good", surcharge: 0 },
-  { id: "fair", label: "Fair", surcharge: 0.1 },
-  { id: "rough", label: "Rough", surcharge: 0.25 },
-] as const;
-
-export type ConditionId = (typeof CONDITIONS)[number]["id"];
-
 // Estimate is shown as a range of ±15% around the computed midpoint.
 export const RANGE_SPREAD = 0.15;
 
 export type EstimateInput = {
   services: ServiceId[];
   sizeClass: SizeClassId | "";
-  condition: ConditionId | "";
 };
 
 export type Estimate = {
@@ -52,10 +42,8 @@ export function computeEstimate(input: EstimateInput): Estimate {
 
   const sizeMultiplier =
     SIZE_CLASSES.find((s) => s.id === input.sizeClass)?.multiplier ?? 1;
-  const conditionSurcharge =
-    CONDITIONS.find((c) => c.id === input.condition)?.surcharge ?? 0;
 
-  const mid = base * sizeMultiplier * (1 + conditionSurcharge);
+  const mid = base * sizeMultiplier;
   const low = Math.round((mid * (1 - RANGE_SPREAD)) / 5) * 5;
   const high = Math.round((mid * (1 + RANGE_SPREAD)) / 5) * 5;
 
@@ -81,5 +69,3 @@ export const serviceLabel = (id: ServiceId) =>
   SERVICES.find((s) => s.id === id)?.label ?? id;
 export const sizeClassLabel = (id: SizeClassId | "") =>
   SIZE_CLASSES.find((s) => s.id === id)?.label ?? id;
-export const conditionLabel = (id: ConditionId | "") =>
-  CONDITIONS.find((c) => c.id === id)?.label ?? id;
