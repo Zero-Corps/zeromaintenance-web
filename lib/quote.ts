@@ -19,34 +19,24 @@ export const SIZE_CLASSES = [
 
 export type SizeClassId = (typeof SIZE_CLASSES)[number]["id"];
 
-// Estimate is shown as a range of ±15% around the flat service price.
-export const RANGE_SPREAD = 0.15;
-
 export type EstimateInput = {
   service: ServiceId | "";
 };
 
 export type Estimate = {
-  base: number;
-  mid: number;
-  low: number;
-  high: number;
+  // Flat price for the selected package.
+  price: number;
+  // Original (pre-launch) price, if the package has launch pricing — else null.
+  compareAt: number | null;
   hasSelection: boolean;
 };
 
 export function computeEstimate(input: EstimateInput): Estimate {
-  const servicePrice =
-    SERVICES.find((s) => s.id === input.service)?.price ?? 0;
-
-  const mid = input.service ? servicePrice : 0;
-  const low = Math.round((mid * (1 - RANGE_SPREAD)) / 5) * 5;
-  const high = Math.round((mid * (1 + RANGE_SPREAD)) / 5) * 5;
+  const svc = SERVICES.find((s) => s.id === input.service);
 
   return {
-    base: servicePrice,
-    mid: Math.round(mid),
-    low,
-    high,
+    price: svc?.price ?? 0,
+    compareAt: svc && "compareAt" in svc ? svc.compareAt : null,
     hasSelection: input.service !== "",
   };
 }

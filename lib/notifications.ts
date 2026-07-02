@@ -41,8 +41,20 @@ function vehicleString(q: QuoteNotification): string {
   return parts.length ? parts.join(" ") : "Not specified";
 }
 
-function estimateRange(q: QuoteNotification): string {
-  return `${formatCurrency(q.estimate.low)}–${formatCurrency(q.estimate.high)}`;
+function priceString(q: QuoteNotification): string {
+  const price = formatCurrency(q.estimate.price);
+  return q.estimate.compareAt
+    ? `${price} (launch price — reg. ${formatCurrency(q.estimate.compareAt)})`
+    : price;
+}
+
+function submittedAt(): string {
+  // Wise County, TX is Central time — stamp the alert in the operator's zone.
+  return new Date().toLocaleString("en-US", {
+    timeZone: "America/Chicago",
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 }
 
 function errorMessage(e: unknown): string {
@@ -73,38 +85,67 @@ async function sendEmail(q: QuoteNotification): Promise<ChannelResult> {
     }
 
     const resend = new Resend(apiKey);
-    const serviceList = serviceLabel(q.service);
+    const serviceName = serviceLabel(q.service);
     const vehicle = vehicleString(q);
-    const range = estimateRange(q);
+    const price = priceString(q);
+    const when = submittedAt();
+    const notes = q.notes?.trim() ? q.notes : "—";
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      q.serviceAddress,
+    )}`;
+
+    const row = (label: string, value: string) =>
+      `<tr><td style="padding:7px 0;color:#8A90A2;width:150px;vertical-align:top">${label}</td><td style="padding:7px 0;vertical-align:top">${value}</td></tr>`;
 
     const html = `
-    <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;background:#0A0A0F;color:#F4F5F8;padding:28px;border-radius:8px">
+    <div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;background:#0A0A0F;color:#F4F5F8;padding:28px;border-radius:8px">
       <p style="font-family:monospace;letter-spacing:2px;color:#8A90A2;font-size:12px;text-transform:uppercase;margin:0 0 8px">New Quote Request</p>
       <h1 style="font-size:24px;margin:0 0 4px">${q.name}</h1>
-      <p style="color:#5A9BFF;font-size:20px;font-weight:bold;margin:8px 0 20px">${range}</p>
-      <table style="width:100%;border-collapse:collapse;font-size:14px">
-        <tr><td style="padding:6px 0;color:#8A90A2;width:130px">Email</td><td style="padding:6px 0"><a style="color:#5A9BFF" href="mailto:${q.email}">${q.email}</a></td></tr>
-        <tr><td style="padding:6px 0;color:#8A90A2">Phone</td><td style="padding:6px 0"><a style="color:#5A9BFF" href="tel:${q.phone}">${q.phone}</a></td></tr>
-        <tr><td style="padding:6px 0;color:#8A90A2">Vehicle</td><td style="padding:6px 0">${vehicle}</td></tr>
-        <tr><td style="padding:6px 0;color:#8A90A2">Size class</td><td style="padding:6px 0">${sizeClassLabel(q.sizeClass)}</td></tr>
-        <tr><td style="padding:6px 0;color:#8A90A2">Service</td><td style="padding:6px 0">${serviceList}</td></tr>
-        <tr><td style="padding:6px 0;color:#8A90A2">Service address</td><td style="padding:6px 0">${q.serviceAddress}</td></tr>
-        <tr><td style="padding:6px 0;color:#8A90A2;vertical-align:top">Notes</td><td style="padding:6px 0">${q.notes?.trim() ? q.notes : "—"}</td></tr>
+      <p style="color:#5A9BFF;font-size:20px;font-weight:bold;margin:8px 0 4px">${serviceName} — ${price}</p>
+      <p style="color:#8A90A2;font-size:12px;margin:0 0 20px">Submitted ${when} (CT)</p>
+
+      <p style="font-family:monospace;letter-spacing:1px;color:#8A90A2;font-size:11px;text-transform:uppercase;margin:0 0 4px">Customer</p>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin:0 0 18px">
+        ${row("Name", q.name)}
+        ${row("Email", `<a style="color:#5A9BFF" href="mailto:${q.email}">${q.email}</a>`)}
+        ${row("Phone", `<a style="color:#5A9BFF" href="tel:${q.phone}">${q.phone}</a>`)}
+        ${row("Service address", `${q.serviceAddress} · <a style="color:#5A9BFF" href="${mapsUrl}">map</a>`)}
       </table>
-      <p style="color:#8A90A2;font-size:12px;margin-top:24px">Estimate is a ±15% range; confirm final price after inspection.</p>
+
+      <p style="font-family:monospace;letter-spacing:1px;color:#8A90A2;font-size:11px;text-transform:uppercase;margin:0 0 4px">Vehicle &amp; service</p>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin:0 0 18px">
+        ${row("Vehicle", vehicle)}
+        ${row("Size class", sizeClassLabel(q.sizeClass))}
+        ${row("Service", serviceName)}
+        ${row("Price", price)}
+        ${row("Notes", notes)}
+      </table>
+
+      ${q.id ? `<p style="color:#8A90A2;font-size:11px;margin-top:8px">Reference: ${q.id}</p>` : ""}
+      <p style="color:#8A90A2;font-size:12px;margin-top:16px">Reply to this email to reach ${q.name} directly. Final total is confirmed after inspection.</p>
     </div>`;
 
     const text = [
-      `New quote request from ${q.name}`,
-      `Estimate: ${range}`,
+      `NEW QUOTE REQUEST`,
+      `Submitted ${when} (CT)`,
+      ``,
+      `— Customer —`,
+      `Name: ${q.name}`,
       `Email: ${q.email}`,
       `Phone: ${q.phone}`,
+      `Service address: ${q.serviceAddress}`,
+      ``,
+      `— Vehicle & service —`,
       `Vehicle: ${vehicle}`,
       `Size class: ${sizeClassLabel(q.sizeClass)}`,
-      `Service: ${serviceList}`,
-      `Service address: ${q.serviceAddress}`,
-      `Notes: ${q.notes?.trim() || "—"}`,
-    ].join("\n");
+      `Service: ${serviceName}`,
+      `Price: ${price}`,
+      `Notes: ${notes}`,
+      q.id ? `` : null,
+      q.id ? `Reference: ${q.id}` : null,
+    ]
+      .filter((line) => line !== null)
+      .join("\n");
 
     // Resend SDK returns { data, error } — it does not throw on API errors.
     const { data, error } = await resend.emails.send(
@@ -112,7 +153,7 @@ async function sendEmail(q: QuoteNotification): Promise<ChannelResult> {
         from,
         to: [to],
         replyTo: q.email,
-        subject: `New quote: ${q.name} — ${range}`,
+        subject: `New quote: ${q.name} — ${serviceName} ${formatCurrency(q.estimate.price)}`,
         html,
         text,
       },
@@ -154,14 +195,12 @@ async function sendSms(q: QuoteNotification): Promise<ChannelResult> {
       return { status: "skipped", reason };
     }
 
-    const serviceList = serviceLabel(q.service);
     const body = [
       `New Zero Maintenance quote`,
       `${q.name} · ${q.phone}`,
       `${vehicleString(q)} (${sizeClassLabel(q.sizeClass)})`,
-      `${serviceList}`,
+      `${serviceLabel(q.service)} — ${formatCurrency(q.estimate.price)}`,
       `@ ${q.serviceAddress}`,
-      `Est ${estimateRange(q)}`,
     ].join("\n");
 
     const params = new URLSearchParams({ To: to, From: from, Body: body });

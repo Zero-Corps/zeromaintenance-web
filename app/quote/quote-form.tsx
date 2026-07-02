@@ -277,7 +277,12 @@ export function QuoteForm() {
                     </span>
                     <span className="font-medium">{option.label}</span>
                   </span>
-                  <span className="font-mono text-sm text-accent-glow">
+                  <span className="flex items-baseline gap-1.5 font-mono text-sm text-accent-glow">
+                    {"compareAt" in option && option.compareAt ? (
+                      <span className="text-muted line-through">
+                        {formatCurrency(option.compareAt)}
+                      </span>
+                    ) : null}
                     {formatCurrency(option.price)}
                   </span>
                 </button>
@@ -310,10 +315,13 @@ export function QuoteForm() {
 
           <div className="mt-4">
             {estimate.hasSelection ? (
-              <p className="font-display text-4xl">
-                {formatCurrency(estimate.low)}
-                <span className="mx-2 text-muted">–</span>
-                {formatCurrency(estimate.high)}
+              <p className="flex items-baseline gap-3 font-display text-5xl">
+                {estimate.compareAt ? (
+                  <span className="text-2xl text-muted line-through">
+                    {formatCurrency(estimate.compareAt)}
+                  </span>
+                ) : null}
+                <span>{formatCurrency(estimate.price)}</span>
               </p>
             ) : (
               <p className="font-display text-3xl text-muted">
@@ -323,8 +331,8 @@ export function QuoteForm() {
           </div>
 
           <p className="mt-4 text-sm text-muted">
-            Live estimate based on your selections. Final price is confirmed
-            after an in-person inspection.
+            Flat price for the selected package. Final total is confirmed after
+            an in-person inspection.
           </p>
 
           <div className="mt-6 space-y-2 border-t border-line pt-5 font-mono text-xs text-muted">

@@ -87,8 +87,8 @@ export async function submitQuote(
     service,
     service_address: serviceAddress,
     notes: payload.notes?.trim() || null,
-    estimate_low: estimate.low,
-    estimate_high: estimate.high,
+    estimate_low: estimate.price,
+    estimate_high: estimate.price,
   });
 
   if (error) {
