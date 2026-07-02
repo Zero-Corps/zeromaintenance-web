@@ -268,6 +268,11 @@ export function QuoteForm() {
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Anything we should know — stains, deep scratches, specific goals…"
           />
+          <p className="mt-3 text-xs text-muted">
+            No need to upload photos here — after you submit, we&apos;ll text
+            the number you provide so you can send pictures of your vehicle
+            directly.
+          </p>
         </fieldset>
       </div>
 

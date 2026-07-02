@@ -31,6 +31,11 @@ export default function QuoteSuccessPage() {
               out shortly to confirm the details, finalize pricing after an
               inspection, and get you scheduled.
             </p>
+            <p className="animate-rise-delay-2 mt-4 max-w-lg text-sm text-muted">
+              <span className="text-fg">Have photos of your vehicle?</span> No
+              need to upload them here — we&apos;ll text the number you provided
+              so you can send pictures directly.
+            </p>
             <div className="animate-rise-delay-3 mt-10 flex flex-wrap justify-center gap-4">
               <Link
                 href="/"
