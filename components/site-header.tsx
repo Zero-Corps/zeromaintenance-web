@@ -9,22 +9,22 @@ export function SiteHeader() {
           <BrandLogo />
         </Link>
 
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-7">
           <Link
             href="/#services"
-            className="hidden font-display text-lg tracking-wide text-muted transition-colors hover:text-fg sm:block"
+            className="hidden spec-label transition-colors hover:text-fg sm:block"
           >
             Services
           </Link>
           <Link
             href="/#process"
-            className="hidden font-display text-lg tracking-wide text-muted transition-colors hover:text-fg sm:block"
+            className="hidden spec-label transition-colors hover:text-fg sm:block"
           >
             Process
           </Link>
           <Link
             href="/quote"
-            className="rounded-none bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-glow"
+            className="rounded-none bg-accent px-4 py-2 text-sm font-semibold uppercase tracking-widest text-white transition-colors hover:bg-accent-glow"
           >
             Quote
           </Link>
